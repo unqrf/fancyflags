@@ -14,6 +14,9 @@
 # ============================================================================
 """Automatically builds flags from a callable signature."""
 
+# Support standard types (e.g. list[int]) as type annotation.
+from __future__ import annotations
+
 import enum
 import functools
 import inspect
@@ -30,6 +33,10 @@ _TYPE_MAP = {
     List[float]: _definitions.Sequence,
     List[int]: _definitions.Sequence,
     List[str]: _definitions.Sequence,
+    list[bool]: _definitions.Sequence,
+    list[float]: _definitions.Sequence,
+    list[int]: _definitions.Sequence,
+    list[str]: _definitions.Sequence,
     Sequence[bool]: _definitions.Sequence,
     Sequence[float]: _definitions.Sequence,
     Sequence[int]: _definitions.Sequence,
@@ -42,6 +49,14 @@ _TYPE_MAP = {
     Tuple[int]: _definitions.Sequence,
     Tuple[str, ...]: _definitions.Sequence,
     Tuple[str]: _definitions.Sequence,
+    tuple[bool, ...]: _definitions.Sequence,
+    tuple[bool]: _definitions.Sequence,
+    tuple[float, ...]: _definitions.Sequence,
+    tuple[float]: _definitions.Sequence,
+    tuple[int, ...]: _definitions.Sequence,
+    tuple[int]: _definitions.Sequence,
+    tuple[str, ...]: _definitions.Sequence,
+    tuple[str]: _definitions.Sequence,
     bool: _definitions.Boolean,
     float: _definitions.Float,
     int: _definitions.Integer,

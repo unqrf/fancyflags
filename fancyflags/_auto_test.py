@@ -73,6 +73,28 @@ class AutoTest(absltest.TestCase):
     ff.DEFINE_dict('my_function_settings', **ff_dict)
     self.assertEqual(FLAGS.my_function_settings, expected_settings)
 
+  def test_works_fn_pep585(self):
+
+    # pylint: disable=unused-argument
+    def my_function(
+        list_int: list[int] = [1, 2, 3],
+        tuple_str: tuple[str] = ('foo',),
+        variadic_tuple_str: tuple[str, ...] = ('foo', 'bar'),
+        optional_list_int: Optional[list[int]] = None,
+    ):  # pylint: disable=dangerous-default-value
+      pass
+    # pylint: enable=unused-argument
+    expected_settings = {
+        'list_int': [1, 2, 3],
+        'tuple_str': ('foo',),
+        'variadic_tuple_str': ('foo', 'bar'),
+        'optional_list_int': None,
+    }
+    ff_dict = ff.auto(my_function)
+    self.assertCountEqual(expected_settings, ff_dict)
+    ff.DEFINE_dict('my_function_settings_pep585', **ff_dict)
+    self.assertEqual(FLAGS.my_function_settings_pep585, expected_settings)
+
   def test_works_enum_fn(self):
 
     # pylint: disable=unused-argument
@@ -129,6 +151,31 @@ class AutoTest(absltest.TestCase):
     self.assertCountEqual(expected_settings, ff_dict)
     ff.DEFINE_dict('my_class_settings', **ff_dict)
     self.assertEqual(FLAGS.my_class_settings, expected_settings)
+
+  def test_works_class_pep585(self):
+
+    class MyClass:
+
+      # pylint: disable=unused-argument
+      def __init__(
+          self,
+          list_int: list[int] = [1, 2, 3],
+          tuple_str: tuple[str] = ('foo',),
+          variadic_tuple_str: tuple[str, ...] = ('foo', 'bar'),
+          optional_list_int: Optional[list[int]] = None,
+      ):  # pylint: disable=dangerous-default-value
+        pass
+      # pylint: enable=unused-argument
+    expected_settings = {
+        'list_int': [1, 2, 3],
+        'tuple_str': ('foo',),
+        'variadic_tuple_str': ('foo', 'bar'),
+        'optional_list_int': None,
+    }
+    ff_dict = ff.auto(MyClass)
+    self.assertCountEqual(expected_settings, ff_dict)
+    ff.DEFINE_dict('my_class_settings_pep585', **ff_dict)
+    self.assertEqual(FLAGS.my_class_settings_pep585, expected_settings)
 
   def test_works_metaclass(self):
 
